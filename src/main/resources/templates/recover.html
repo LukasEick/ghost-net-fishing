@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Netz bergen</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #28a745; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        form { max-width: 500px; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+        .btn { margin-top: 20px; padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 16px; }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+<h1>🌊 Ghost Net Fishing</h1>
+<nav>
+    <a href="/">Alle Netze</a>
+    <a href="/report">Netz melden</a>
+    <a href="/recover">Netz bergen</a>
+    <a href="/coordination">Koordination</a>
+</nav>
+
+<h2>Geisternetze zur Bergung</h2>
+
+<div th:if="${error}" class="error" th:text="${error}"></div>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Größe</th>
+        <th>Status</th>
+    </tr>
+    <tr th:each="net : ${nets}">
+        <td th:text="${net.id}"></td>
+        <td th:text="${net.latitude}"></td>
+        <td th:text="${net.longitude}"></td>
+        <td th:text="${net.estimatedSize}"></td>
+        <td th:text="${net.status}"></td>
+    </tr>
+</table>
+
+<h2>Für Bergung eintragen</h2>
+<form th:action="@{/recover}" method="post">
+    <label>Geisternetz auswählen:</label>
+    <select name="netId">
+        <option th:each="net : ${nets}"
+                th:value="${net.id}"
+                th:text="'Netz #' + ${net.id} + ' – ' + ${net.estimatedSize}">
+        </option>
+    </select>
+
+    <label>Dein Name:</label>
+    <input type="text" name="recovererName" required/>
+
+    <label>Telefonnummer:</label>
+    <input type="text" name="recovererPhone" required/>
+
+    <button class="btn" type="submit">Bergung eintragen</button>
+</form>
+</body>
+</html>

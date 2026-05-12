@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Geisternetze Übersicht</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 30px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .btn { padding: 6px 12px; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        .btn-green { background-color: #28a745; }
+        .btn-red { background-color: #dc3545; }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
+        #map { height: 400px; margin-bottom: 30px; border: 1px solid #ccc; border-radius: 8px; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+        .lost-form { display: inline; }
+        .lost-input { padding: 4px; font-size: 12px; width: 120px; margin-right: 4px; }
+    </style>
+</head>
+<body>
+<h1>🌊 Ghost Net Fishing</h1>
+<nav>
+    <a href="/">Alle Netze</a>
+    <a href="/report">Netz melden</a>
+    <a href="/recover">Netz bergen</a>
+    <a href="/coordination">Koordination</a>
+</nav>
+
+<h2>🗺️ Karte — noch nicht geborgene Netze</h2>
+<div id="map"></div>
+
+<div th:if="${lostError}" class="error" th:text="${lostError}"></div>
+
+<h2>Alle gemeldeten Geisternetze</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Größe</th>
+        <th>Status</th>
+        <th>Berger</th>
+        <th>Aktionen</th>
+    </tr>
+    <tr th:each="net : ${nets}">
+        <td th:text="${net.id}"></td>
+        <td th:text="${net.latitude}"></td>
+        <td th:text="${net.longitude}"></td>
+        <td th:text="${net.estimatedSize}"></td>
+        <td th:text="${net.status}"></td>
+        <td th:text="${net.recoverer != null ? net.recoverer.name : '-'}"></td>
+        <td>
+            <form th:action="@{/markRecovered}" method="post" style="display:inline">
+                <input type="hidden" name="netId" th:value="${net.id}"/>
+                <button class="btn btn-green" type="submit">Geborgen</button>
+            </form>
+            <form th:action="@{/markLost}" method="post" class="lost-form">
+                <input type="hidden" name="netId" th:value="${net.id}"/>
+                <input type="text" name="reporterName" class="lost-input" placeholder="Dein Name (Pflicht)" required/>
+                <button class="btn btn-red" type="submit">Verschollen</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<script th:inline="javascript">
+    var map = L.map('map').setView([20, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(map);
+
+    var nets = [[${mapNets}]];
+    nets.forEach(function(net) {
+        if (net.latitude && net.longitude) {
+            L.marker([net.latitude, net.longitude])
+                .addTo(map)
+                .bindPopup('<b>Netz #' + net.id + '</b><br>Größe: ' + net.estimatedSize + '<br>Status: ' + net.status);
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Koordination</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #6f42c1; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
+        .empty { color: #999; font-style: italic; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<h1>🌊 Ghost Net Fishing</h1>
+<nav>
+    <a href="/">Alle Netze</a>
+    <a href="/report">Netz melden</a>
+    <a href="/recover">Netz bergen</a>
+    <a href="/coordination">Koordination</a>
+</nav>
+
+<h2>👥 Koordination — Wer bergt welches Netz?</h2>
+<p>Hier siehst du alle Netze mit zugewiesenen Bergern zur Abstimmung.</p>
+
+<div th:if="${nets.empty}" class="empty">
+    <p>Aktuell hat sich niemand für eine Bergung eingetragen.</p>
+</div>
+
+<table th:if="${!nets.empty}">
+    <tr>
+        <th>Netz ID</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Größe</th>
+        <th>Status</th>
+        <th>Berger Name</th>
+        <th>Berger Telefon</th>
+    </tr>
+    <tr th:each="net : ${nets}">
+        <td th:text="${net.id}"></td>
+        <td th:text="${net.latitude}"></td>
+        <td th:text="${net.longitude}"></td>
+        <td th:text="${net.estimatedSize}"></td>
+        <td th:text="${net.status}"></td>
+        <td th:text="${net.recoverer != null ? net.recoverer.name : '-'}"></td>
+        <td th:text="${net.recoverer != null ? net.recoverer.phone : '-'}"></td>
+    </tr>
+</table>
+</body>
+</html>

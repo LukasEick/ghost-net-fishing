@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Geisternetz melden</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        form { max-width: 500px; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+        .btn { margin-top: 20px; padding: 10px 20px; background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; font-size: 16px; }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
+    </style>
+</head>
+<body>
+<h1>🌊 Ghost Net Fishing</h1>
+<nav>
+    <a href="/">Alle Netze</a>
+    <a href="/report">Netz melden</a>
+    <a href="/recover">Netz bergen</a>
+    <a href="/coordination">Koordination</a>
+</nav>
+
+<h2>Geisternetz melden</h2>
+<form th:action="@{/report}" th:object="${ghostNet}" method="post">
+    <label>Latitude (GPS):</label>
+    <input type="number" step="0.000001" th:field="*{latitude}" placeholder="z.B. 54.123456" required/>
+
+    <label>Longitude (GPS):</label>
+    <input type="number" step="0.000001" th:field="*{longitude}" placeholder="z.B. 10.123456" required/>
+
+    <label>Geschätzte Größe:</label>
+    <select th:field="*{estimatedSize}">
+        <option value="Klein (unter 10m²)">Klein (unter 10m²)</option>
+        <option value="Mittel (10-50m²)">Mittel (10-50m²)</option>
+        <option value="Groß (über 50m²)">Groß (über 50m²)</option>
+    </select>
+
+    <hr style="margin-top:20px"/>
+    <p><em>Optional: Deine Kontaktdaten (kann anonym bleiben)</em></p>
+
+    <label>Dein Name (optional):</label>
+    <input type="text" name="reporterName" placeholder="Leer lassen für anonyme Meldung"/>
+
+    <label>Telefonnummer (optional):</label>
+    <input type="text" name="reporterPhone" placeholder="Nur nötig wenn Name angegeben"/>
+
+    <button class="btn" type="submit">Geisternetz melden</button>
+</form>
+</body>
+</html>

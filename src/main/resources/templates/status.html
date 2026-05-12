@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Status melden</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #6c757d; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .btn { padding: 6px 12px; color: white; border: none; cursor: pointer; border-radius: 4px; }
+        .btn-red { background-color: #dc3545; }
+        nav { margin-bottom: 20px; }
+        nav a { margin-right: 15px; text-decoration: none; color: #007bff; font-weight: bold; }
+    </style>
+</head>
+<body>
+<h1>🌊 Ghost Net Fishing</h1>
+<nav>
+    <a href="/">Alle Netze</a>
+    <a href="/report">Netz melden</a>
+    <a href="/recover">Netz bergen</a>
+    <a href="/coordination">Koordination</a>
+</nav>
+
+<h2>Geisternetz als verschollen melden</h2>
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Größe</th>
+        <th>Status</th>
+        <th>Aktion</th>
+    </tr>
+    <tr th:each="net : ${nets}">
+        <td th:text="${net.id}"></td>
+        <td th:text="${net.latitude}"></td>
+        <td th:text="${net.longitude}"></td>
+        <td th:text="${net.estimatedSize}"></td>
+        <td th:text="${net.status}"></td>
+        <td>
+            <form th:action="@{/markLost}" method="post">
+                <input type="hidden" name="netId" th:value="${net.id}"/>
+                <button class="btn btn-red" type="submit">Verschollen melden</button>
+            </form>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
